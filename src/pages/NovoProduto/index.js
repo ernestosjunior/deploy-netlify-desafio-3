@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
-import { 
-  Divider, 
-  Typography, 
+import React, { useState } from "react";
+import {
+  Divider,
+  Typography,
   Button,
   TextField,
   InputAdornment,
   Snackbar,
   Backdrop,
   CircularProgress,
-} from '@material-ui/core'
-import useStyles from './styles';
-import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import Alert from '@material-ui/lab/Alert';
-import { post } from '../../services/ApiClient';
+} from "@material-ui/core";
+import useStyles from "./styles";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import Alert from "@material-ui/lab/Alert";
+import { post } from "../../services/ApiClient";
+import useAuth from "../../hook/useAuth";
 
 function NovoProduto() {
   const classes = useStyles();
   const history = useHistory();
   const { token } = useAuth();
   const { register, handleSubmit } = useForm();
-  const [erro, setErro] = useState('');
+  const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
 
   console.log("Test");
@@ -29,20 +30,20 @@ function NovoProduto() {
   async function onSubmit(data) {
     try {
       setCarregando(true);
-      setErro('');
+      setErro("");
 
-      data.categoria = 'nao categorizado';
+      data.categoria = "nao categorizado";
 
-      const { dados, erro } = await post('produtos', data, token);
+      const { dados, erro } = await post("produtos", data, token);
 
       if (erro) {
         setErro(dados);
         return;
       }
 
-      history.push('/produtos');
+      history.push("/produtos");
     } catch (error) {
-      setErro(error.message); 
+      setErro(error.message);
     } finally {
       setCarregando(false);
     }
@@ -52,39 +53,50 @@ function NovoProduto() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Typography variant="h4">Adicionar produto</Typography>
       <div className={classes.formContainer}>
-        <TextField label="Nome do produto" {...register('nome', { required: true })} />
+        <TextField
+          label="Nome do produto"
+          {...register("nome", { required: true })}
+        />
         <div className="columns">
-        <TextField
-          label="Preço"
-          {...register('preco', { required: true })}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-          }}
-        />
-        <TextField
-          label="Estoque"
-          {...register('estoque', { required: true })}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">Un</InputAdornment>,
-          }}
-        />
+          <TextField
+            label="Preço"
+            {...register("preco", { required: true })}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">R$</InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label="Estoque"
+            {...register("estoque", { required: true })}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">Un</InputAdornment>
+              ),
+            }}
+          />
         </div>
-        <TextField label="Descrição do produto" {...register('descricao', { required: true })} />
-        <TextField label="Imagem" {...register('imagem')} />
+        <TextField
+          label="Descrição do produto"
+          {...register("descricao", { required: true })}
+        />
+        <TextField label="Imagem" {...register("imagem")} />
       </div>
       <Divider className={classes.divider} />
-      <Link to="/produtos" className={classes.link}>CANCELAR</Link>
-      <Button 
-        className={classes.botao}
-        type="submit"
-      >ADICIONAR PRODUTO</Button>
+      <Link to="/produtos" className={classes.link}>
+        CANCELAR
+      </Link>
+      <Button className={classes.botao} type="submit">
+        ADICIONAR PRODUTO
+      </Button>
       <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={3000}
         open={!!erro}
         key={erro}
       >
-        <Alert onClose={() => setErro('')} severity="error">
+        <Alert onClose={() => setErro("")} severity="error">
           {erro}
         </Alert>
       </Snackbar>
@@ -92,7 +104,7 @@ function NovoProduto() {
         <CircularProgress color="inherit" />
       </Backdrop>
     </form>
-  )
+  );
 }
 
 export default NovoProduto;
